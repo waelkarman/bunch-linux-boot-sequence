@@ -1,6 +1,6 @@
 ## Bunch Linux boot sequence [in development]
 
-[Bunch-Linux](https://github.com/waelkarman/bunch-linux-manifests) deep boot sequence investigation.
+[Bunch-Linux](https://github.com/waelkarman/bunch-linux-manifests) deep boot sequence documentation.
 
 - [DeviceTree](https://github.com/devicetree-org/devicetree-specification)
 - Kernel Configuration
