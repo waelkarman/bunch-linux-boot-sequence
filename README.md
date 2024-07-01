@@ -5,6 +5,6 @@
 - [DeviceTree](https://github.com/devicetree-org/devicetree-specification)
 - Kernel Configuration
 
-Raspberry full technical doc:
+Raspberry full technical docs:
 
-- [tech-doc](https://datasheets.raspberrypi.com/)
+- [tech-docs](https://datasheets.raspberrypi.com/)
