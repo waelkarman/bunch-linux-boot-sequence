@@ -9,6 +9,7 @@
     - bcm2711-rpi-cm4s.dtb
 
 - Kernel Configuration
+    - dot-config
 
 
 
