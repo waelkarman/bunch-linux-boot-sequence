@@ -1,4 +1,16 @@
 U-Boot> fdt print
+/*
+	La suddivisione gerarchica di un Device Tree è principalmente logica, ed è finalizzata a 
+	rappresentare la struttura e l'organizzazione del sistema hardware in modo chiaro e 
+	comprensibile per il kernel, non necessariamente per riflettere la posizione fisica dei 
+	componenti nel sistema.
+
+	Tuttavia, in alcuni casi, ci possono essere elementi fisici descritti, come indirizzi di 
+	memoria o porte di I/O, che indicano dove si trovano fisicamente i dispositivi nel sistema. 
+	Ma, in generale, la gerarchia nel Device Tree è strutturata per rappresentare una visione 
+	logica delle risorse hardware e dei loro rapporti.
+
+*/
 / {
 	memreserve = <0x30000000 0x10000000>;
 	serial-number = "10000000747f32dc";
@@ -16,6 +28,15 @@ U-Boot> fdt print
 			reg = <0x3ec00000 0x40000000 0xc0000000>;
 		};
 	};
+
+	/*
+		Il fine principale di un alias nel Device Tree è semplificare il modo in cui si 
+		fa riferimento a dispositivi o nodi hardware nel kernel o in altri software che 
+		interagiscono con il Device Tree. L'alias fornisce un nome simbolico che può essere 
+		utilizzato per riferirsi a un nodo hardware senza dover scrivere il percorso completo 
+		ogni volta.
+		Non ha significato per il device tree ne influenza come sia fatto
+	*/
 	aliases {
 		display0 = "/chosen/framebuffer@3e8fa000";
 		serial0 = "/soc/serial@7e215040";
@@ -74,6 +95,13 @@ U-Boot> fdt print
 		spi6 = "/soc/spi@7e204c00";
 		phandle = <0x0000004f>;
 	};
+
+	/*
+		La sezione chosen è tipicamente utilizzata per fornire al kernel (o al bootloader) variabili e parametri 
+		specifici che influenzano il comportamento del sistema durante l'avvio. In altre parole, è un modo per 
+		comunicare informazioni critiche al kernel, che potrebbero non essere direttamente correlate alla descrizione 
+		hardware del sistema, ma che sono essenziali per il processo di boot.
+	*/
 	chosen {
 		ranges;
 		#size-cells = <0x00000001>;
@@ -108,6 +136,14 @@ U-Boot> fdt print
 			partition = <0x00000000>;
 		};
 	};
+
+	/*
+		Il nodo reserved-memory nel Device Tree viene utilizzato per riservare porzioni di 
+		memoria che non devono essere utilizzate dal sistema operativo per la gestione della 
+		memoria normale (come la RAM per i processi utente). In altre parole, questo nodo serve 
+		per riservare e proteggere regioni specifiche della memoria che sono necessarie per 
+		hardware specifico, firmware, o altre funzionalità che richiedono l'uso di memoria separata.
+	*/
 	reserved-memory {
 		#address-cells = <0x00000002>;
 		#size-cells = <0x00000001>;
@@ -140,6 +176,19 @@ U-Boot> fdt print
 			phandle = <0x00000059>;
 		};
 	};
+
+	/*
+		Il nodo thermal-zones nel Device Tree viene utilizzato per configurare e descrivere le aree di 
+		monitoraggio della temperatura (zone termiche) di un sistema. Queste "zone termiche" rappresentano 
+		i vari sensori di temperatura presenti nel dispositivo e sono utilizzate dal kernel per gestire 
+		la temperatura del sistema, ad esempio, per attivare politiche di gestione della temperatura 
+		come il throttling (limitazione delle prestazioni) o l'attivazione dei fan (ventole di raffreddamento) 
+		quando la temperatura supera una certa soglia.
+
+		In sostanza, il nodo thermal-zones consente al kernel di rilevare e monitorare la temperatura di 
+		componenti critici come la CPU, la GPU o altre periferiche, e di prendere decisioni per evitare 
+		il surriscaldamento e mantenere il sistema stabile.
+	*/
 	thermal-zones {
 		cpu-thermal {
 			polling-delay-passive = <0x00000000>;
@@ -160,6 +209,24 @@ U-Boot> fdt print
 			};
 		};
 	};
+
+	/*
+
+		Il nodo /soc in un Device Tree rappresenta il System on Chip (SoC) di un sistema embedded, 
+		ed è uno degli elementi chiave nella descrizione hardware di un sistema. Questo nodo raccoglie 
+		e descrive tutte le periferiche e i componenti hardware che fanno parte del SoC. Nel contesto 
+		di un Device Tree, il nodo /soc aiuta il kernel a comprendere la configurazione hardware e a 
+		interagire con il SoC e le sue periferiche integrate.
+
+		A cosa serve il nodo /soc:
+		Il nodo /soc viene utilizzato per descrivere e centralizzare tutte le componenti hardware 
+		integrate nel System on Chip (SoC), che include, tra le altre cose, la CPU, la GPU, i controller 
+		di memoria, le interfacce I/O (come GPIO, I2C, SPI), e altre periferiche integrate nel chip.
+
+		Essenzialmente, il nodo /soc è il contenitore di tutti i dispositivi hardware che fanno parte del 
+		SoC, e permette al kernel di inizializzare e configurare correttamente il sistema hardware 
+		durante il boot.
+	*/
 	soc {
 		compatible = "simple-bus";
 		#address-cells = <0x00000001>;
@@ -1739,6 +1806,16 @@ U-Boot> fdt print
 			phandle = <0x000000de>;
 		};
 	};
+
+	/*
+		Il nodo /clocks in un Device Tree è utilizzato per definire e descrivere i clock 
+		(orologi) utilizzati nel sistema, come i clock per la CPU, i moduli periferici, 
+		la memoria, i controller di I/O e altre risorse. Questi clock sono essenziali per 
+		il funzionamento del sistema, poiché sincronizzano le operazioni delle varie componenti 
+		hardware e stabiliscono la velocità di funzionamento di CPU, GPU, e altre periferiche. 
+		Il nodo /clocks serve a dichiarare le fonti di clock, le loro frequenze, e le 
+		dipendenze tra i vari clock nel sistema.
+	*/
 	clocks {
 		clk-osc {
 			compatible = "fixed-clock";
@@ -1755,6 +1832,20 @@ U-Boot> fdt print
 			phandle = <0x00000016>;
 		};
 	};
+
+	/*
+		Il nodo /phy nel Device Tree è utilizzato per descrivere un Physical Layer (PHY), 
+		che è una parte fondamentale di molte interfacce di comunicazione, come Ethernet, 
+		USB, e altre tecnologie di rete. Il PHY si occupa della parte fisica della trasmissione 
+		dei dati, gestendo la connessione fisica tra il dispositivo e la rete o l'interfaccia 
+		di comunicazione.
+
+		Il PHY è un dispositivo che agisce come un intermediario tra la parte logica del 
+		protocollo di comunicazione (ad esempio, il controller Ethernet) e la parte fisica 
+		(cavi, segnali elettrici, ecc.). Per esempio, in una connessione Ethernet, il 
+		controller di rete (di livello logico) invia i dati al PHY, che poi converte questi 
+		dati in segnali fisici per essere trasmessi su un cavo Ethernet, e viceversa.
+	*/
 	phy {
 		compatible = "usb-nop-xceiv";
 		#phy-cells = <0x00000000>;
@@ -1773,6 +1864,19 @@ U-Boot> fdt print
 		clock-output-names = "27MHz-clock";
 		phandle = <0x0000002f>;
 	};
+
+	/*
+		Nel contesto di un Device Tree, un nodo come clk-108M rappresenta un clock specifico 
+		che viene definito con un nome e una frequenza particolari (in questo caso, probabilmente 
+		108 MHz), ma potrebbe essere separato dal nodo principale /clocks per motivi organizzativi 
+		o strutturali, a seconda delle esigenze della piattaforma o del design hardware.
+
+		Il nodo clk-108M è probabilmente utilizzato per descrivere un clock specifico che fornisce 
+		una frequenza di 108 MHz per un determinato componente hardware nel sistema, come ad esempio 
+		una periferica, un modulo di rete, un controller o una parte di un SoC (System on Chip). 
+		La definizione di questo nodo serve a configurare e abilitare correttamente il clock durante 
+		il processo di boot del kernel.
+	*/
 	clk-108M {
 		#clock-cells = <0x00000000>;
 		compatible = "fixed-clock";
@@ -1780,6 +1884,18 @@ U-Boot> fdt print
 		clock-output-names = "108MHz-clock";
 		phandle = <0x0000002a>;
 	};
+
+	/*
+		Il nodo emmc2bus nel Device Tree è utilizzato per descrivere la connessione tra il controller 
+		eMMC (embedded MultiMediaCard) e il bus o l'interfaccia a cui è collegato. eMMC è una tecnologia 
+		di memoria flash utilizzata per l'archiviazione su dispositivi embedded, come smartphone, tablet, 
+		sistemi di infotainment e altre piattaforme hardware.
+
+		Il nodo emmc2bus rappresenta la connessione fisica e la configurazione logica tra il controller 
+		eMMC e il bus su cui è presente la memoria. La funzione principale di questo nodo è quella di 
+		descrivere come il controller eMMC è collegato al sistema e di fornire al kernel Linux le informazioni 
+		necessarie per configurare e gestire correttamente l'interfaccia eMMC.
+	*/
 	emmc2bus {
 		compatible = "simple-bus";
 		#address-cells = <0x00000002>;
@@ -1800,16 +1916,48 @@ U-Boot> fdt print
 			phandle = <0x00000053>;
 		};
 	};
+
+	/*
+		Il nodo arm-pmu nel Device Tree è utilizzato per descrivere il Performance Monitoring Unit (PMU) 
+		in un sistema basato su architettura ARM. Il PMU è una componente hardware che fornisce informazioni 
+		sulle prestazioni del sistema, come il numero di cicli di clock, i cache miss, le istruzioni eseguite, 
+		ecc. Queste informazioni sono cruciali per il monitoraggio e l'ottimizzazione delle prestazioni, 
+		particolarmente in contesti embedded e in sistemi a basso consumo energetico.
+
+		Il PMU è una parte del processore che raccoglie dati sul comportamento del sistema e sulle prestazioni 
+		della CPU. Questi dati possono essere utilizzati per analizzare il carico di lavoro, ottimizzare il 
+		codice, migliorare l'efficienza energetica e diagnostica.
+	*/
 	arm-pmu {
 		compatible = "arm,cortex-a72-pmu", "arm,armv8-pmuv3", "arm,cortex-a7-pmu";
 		interrupts = <0x00000000 0x00000010 0x00000004 0x00000000 0x00000011 0x00000004 0x00000000 0x00000012 0x00000004 0x00000000 0x00000013 0x00000004>;
 		interrupt-affinity = <0x00000039 0x0000003a 0x0000003b 0x0000003c>;
 	};
+
+	/*
+		Il nodo timer nel Device Tree viene utilizzato per descrivere i timer hardware presenti in un sistema 
+		embedded, in particolare quelli legati al processore o al System on Chip (SoC). I timer sono componenti 
+		cruciali in molti sistemi, in quanto vengono utilizzati per misurare il tempo, generare interruzioni 
+		periodiche, e per implementare funzionalità come il gestione del tempo e il controllo delle operazioni 
+		periodiche.
+
+		In un sistema embedded o su un SoC, il nodo timer serve a configurare e a descrivere le risorse hardware 
+		associate ai timer, rendendo possibile al kernel Linux o ad altri sistemi operativi di interagire con i 
+		timer per scopi come la gestione delle interruzioni, la gestione dei processi, il timeout delle operazioni 
+		e altre funzioni temporali.
+	*/
 	timer {
 		compatible = "arm,armv8-timer";
 		interrupts = <0x00000001 0x0000000d 0x00000f08 0x00000001 0x0000000e 0x00000f08 0x00000001 0x0000000b 0x00000f08 0x00000001 0x0000000a 0x00000f08>;
 		arm,cpu-registers-not-fw-configured;
 	};
+
+	/*
+		Il nodo cpus nel Device Tree è utilizzato per descrivere le informazioni relative ai processori (CPU) in 
+		un sistema, inclusi i dettagli su ogni nucleo della CPU presente. Questo nodo è cruciale per il kernel, 
+		poiché consente al sistema operativo di configurare correttamente i core della CPU e gestirli durante l'esecuzione 
+		di processi e il scheduling.
+	*/
 	cpus {
 		#address-cells = <0x00000001>;
 		#size-cells = <0x00000000>;
@@ -1885,6 +2033,14 @@ U-Boot> fdt print
 			phandle = <0x0000003d>;
 		};
 	};
+
+	/*
+		Il nodo scb (System Control Block) nel Device Tree è utilizzato per descrivere e configurare l'hardware 
+		del System Control Block (SCB), che è una parte fondamentale dei sistemi basati su architettura ARM. 
+		L'SCB è un componente hardware che gestisce aspetti critici del controllo e della gestione del sistema, 
+		come le interruzioni, la gestione del reset, la configurazione delle priorità di interruzione, la 
+		sospensione e altre funzionalità di sistema.
+	*/
 	scb {
 		compatible = "simple-bus";
 		#address-cells = <0x00000002>;
@@ -2006,6 +2162,32 @@ U-Boot> fdt print
 		status = "okay";
 		phandle = <0x000000ea>;
 	};
+
+	/*
+		Il nodo __overrides__ nel Device Tree è utilizzato per specificare modifiche o sovrascritture a 
+		proprietà o nodi esistenti nel Device Tree. In altre parole, questo nodo permette di applicare 
+		modifiche a un Device Tree già esistente senza dover modificare direttamente il file di origine 
+		del Device Tree. È una tecnica utile per cambiare configurazioni in base a particolari condizioni 
+		o esigenze, come l'overriding di valori per adattarsi a configurazioni hardware particolari o 
+		versioni differenti del sistema.
+
+		A cosa serve il nodo __overrides__?
+		Il nodo __overrides__ permette di applicare modifiche a un Device Tree già definito, ad esempio:
+
+		- Modificare valori di proprietà di nodi esistenti.
+		- Aggiungere o modificare configurazioni di nodi che potrebbero essere generici nel Device Tree 
+		originale ma necessitano di un cambiamento per adattarsi a una configurazione specifica.
+		
+		Questa funzionalità è tipicamente usata in combinazione con strumenti di build o compilazione 
+		del Device Tree per applicare modifiche condizionali durante la creazione del dispositivo, come 
+		nel caso di piattaforme hardware variabili o configurazioni di sistema diverse (ad esempio, tra 
+		diverse versioni dello stesso SoC).
+
+		Struttura del nodo __overrides__
+		Il nodo __overrides__ si inserisce nel Device Tree come un nodo di alto livello, generalmente al 
+		di fuori della struttura di configurazione principale (tipicamente all'interno della directory root), 
+		e contiene sotto-nodi che specificano le modifiche. Ogni sotto-nodo rappresenta un'overriding action specifica.
+	*/
 	__overrides__ {
 		cam0-pwdn-ctrl;
 		cam0-pwdn;
@@ -2058,10 +2240,31 @@ U-Boot> fdt print
 		eth_led0 = <0x00000040 0x6c65642d 0x6d6f6465 0x733a3000>;
 		eth_led1 = <0x00000040 0x6c65642d 0x6d6f6465 0x733a3400>;
 	};
+
+	/*
+		Il nodo memory@0 nel Device Tree descrive la memoria fisica del sistema, ossia la RAM disponibile 
+		e il suo intervallo di indirizzi. È una delle informazioni fondamentali che il kernel utilizza per 
+		configurare correttamente la gestione della memoria durante l'avvio del sistema.
+
+		Il nodo memory@0 è utilizzato per definire l'area di memoria fisica (tipicamente RAM) del sistema, specificando:
+
+		-Indirizzo di inizio della memoria.
+		-Dimensione dell'area di memoria.
+
+		Questa descrizione è fondamentale perché il kernel ha bisogno di sapere dove inizia la memoria fisica e 
+		quanto è grande l'area allocata per poterla utilizzare correttamente, ad esempio per la gestione di processi 
+		e la gestione delle risorse di sistema.
+	*/
 	memory@0 {
 		device_type = "memory";
 		reg = <0x00000000 0x00000000 0x30000000 0x00000000 0x40000000 0xbc000000>;
 	};
+
+	/*
+		Il nodo leds nel Device Tree viene utilizzato per descrivere i dispositivi LED (Light Emitting Diode) 
+		presenti nel sistema. Questo nodo permette al kernel di gestire i LED fisici, come quelli utilizzati 
+		per indicare lo stato del sistema, delle periferiche o altre informazioni visive tramite segnali luminosi.
+	*/
 	leds {
 		compatible = "gpio-leds";
 		phandle = <0x000000eb>;
@@ -2080,6 +2283,21 @@ U-Boot> fdt print
 			phandle = <0x00000055>;
 		};
 	};
+
+	/*
+		Il nodo regulator-sd-io-1v8 nel Device Tree descrive un regolatore di tensione (voltage regulator) 
+		che fornisce una tensione di 1.8V per alimentare la SDIO (Secure Digital Input Output), che è un'interfaccia 
+		di comunicazione comune in molte piattaforme embedded per la gestione di dispositivi come schede SD o moduli Wi-Fi.
+
+		Il nodo regulator-sd-io-1v8 specifica la configurazione di un regolatore di tensione che è responsabile di 
+		fornire la tensione corretta (1.8V in questo caso) per i segnali di alimentazione dell'interfaccia SDIO. 
+		Molti dispositivi, come i moduli Wi-Fi, utilizzano l'interfaccia SDIO per la comunicazione e richiedono 
+		alimentazioni specifiche per i segnali di input/output.
+
+		I regolatori di tensione sono essenziali in un sistema embedded perché possono adattare una tensione di 
+		alimentazione di ingresso a quella richiesta dal dispositivo, assicurando che il dispositivo funzioni 
+		correttamente senza danneggiarsi.
+	*/
 	regulator-sd-io-1v8 {
 		compatible = "regulator-gpio";
 		regulator-name = "vdd-sd-io";
@@ -2119,11 +2337,32 @@ U-Boot> fdt print
 		regulator-name = "5v0";
 		phandle = <0x000000ed>;
 	};
+
+	/*
+		Il nodo zone_dma nel Device Tree è utilizzato per specificare un'area della memoria che può essere 
+		utilizzata per le operazioni DMA (Direct Memory Access). Il DMA è una tecnica di trasferimento dati 
+		che permette a dispositivi periferici (come interfacce di rete, audio, video, etc.) di accedere 
+		direttamente alla memoria del sistema senza passare per la CPU, migliorando l'efficienza e riducendo 
+		il carico di lavoro sulla CPU.
+
+		Il nodo zone_dma viene utilizzato per definire una "zona" di memoria che è accessibile dalle periferiche 
+		che utilizzano il DMA. Non tutte le aree di memoria sono idonee per operazioni DMA; alcune aree, come 
+		la memoria non coerente o troppo lontana, potrebbero non essere adatte o potrebbero richiedere configurazioni 
+		speciali.
+	*/
 	zone_dma {
 		#address-cells = <0x00000001>;
 		#size-cells = <0x00000001>;
 		dma-ranges = <0x00000000 0x00000000 0x00000000 0x40000000>;
 	};
+
+	/*
+		Il nodo v3dbus nel Device Tree è tipicamente utilizzato per descrivere un bus di comunicazione nel sistema 
+		embedded. Nello specifico, v3dbus potrebbe essere una rappresentazione di un bus specifico che il dispositivo 
+		utilizza per comunicare con altri componenti o periferiche, come un bus I2C, SPI, o un altro tipo di bus di 
+		interconnessione. La denominazione v3dbus potrebbe essere utilizzata in particolari architetture hardware, 
+		come quelle relative a piattaforme specifiche o dispositivi integrati.
+	*/
 	v3dbus {
 		compatible = "simple-bus";
 		#address-cells = <0x00000001>;
@@ -2144,6 +2383,28 @@ U-Boot> fdt print
 			phandle = <0x000000ef>;
 		};
 	};
+
+	/*
+		Il nodo __symbols__ nel Device Tree è utilizzato per dichiarare simboli o etichette che possono essere utilizzati 
+		per fare riferimento a nodi o proprietà specifiche nel Device Tree in modo più flessibile e riutilizzabile. Questo 
+		nodo non è usato per definire direttamente dispositivi o periferiche, ma per creare riferimenti simbolici che 
+		il kernel o altri strumenti (come il bootloader) possono usare per indirizzare nodi specifici nel Device Tree.
+
+		Definire simboli riutilizzabili: Il nodo __symbols__ consente di creare simboli che possono essere utilizzati per 
+		fare riferimento a nodi o proprietà nel Device Tree senza dover ripetere gli indirizzi o le etichette specifiche. 
+		Questo è utile per migliorare la manutenzione e la leggibilità del Device Tree.
+
+		Permettere riferimenti dinamici: In alcuni casi, è necessario fare riferimento a un nodo o a una proprietà del 
+		Device Tree in modo dinamico, a seconda della configurazione o del sistema. I simboli permettono di farlo in 
+		maniera più semplice e pulita.
+
+		Gestione di etichette: I simboli definiti nel nodo __symbols__ possono essere utilizzati in vari punti del Device 
+		Tree per evitare duplicazioni, rendendo la struttura del Device Tree più organizzata.
+
+		All'interno del nodo __symbols__, vengono definiti simboli che rappresentano altre parti del Device Tree, come 
+		un indirizzo di un nodo o una proprietà. Un simbolo può essere utilizzato per fare riferimento a un nodo specifico 
+		o a una parte di un nodo senza dover usare l'intero percorso.
+	*/
 	__symbols__ {
 		aliases = "/aliases";
 		chosen = "/chosen";
